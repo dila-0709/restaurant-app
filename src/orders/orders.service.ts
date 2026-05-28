@@ -12,9 +12,6 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 export class OrdersService {
   constructor(private prisma: PrismaService) {}
 
-  // ======================
-  // CREATE ORDER
-  // ======================
   async create(data: CreateOrderDto) {
     const menu = await this.prisma.menu.findUnique({
       where: { id: data.menuId },
@@ -39,7 +36,6 @@ export class OrdersService {
       },
     });
 
-    // 🔥 KURANGI STOCK
     await this.prisma.menu.update({
       where: { id: data.menuId },
       data: {
@@ -53,9 +49,6 @@ export class OrdersService {
     };
   }
 
-  // ======================
-  // GET ALL
-  // ======================
   async findAll() {
     return this.prisma.order.findMany({
       include: {
@@ -66,9 +59,6 @@ export class OrdersService {
     });
   }
 
-  // ======================
-  // GET ONE
-  // ======================
   async findOne(id: number) {
     const order = await this.prisma.order.findUnique({
       where: { id },
@@ -86,9 +76,6 @@ export class OrdersService {
     return order;
   }
 
-  // ======================
-  // UPDATE ORDER
-  // ======================
   async update(id: number, data: UpdateOrderDto) {
     const order = await this.prisma.order.findUnique({
       where: { id },
@@ -106,9 +93,6 @@ export class OrdersService {
     });
   }
 
-  // ======================
-  // DELETE ORDER (FIX + RESTORE STOCK)
-  // ======================
   async delete(id: number) {
     const order = await this.prisma.order.findUnique({
       where: { id },
@@ -118,12 +102,10 @@ export class OrdersService {
       throw new NotFoundException('Order tidak ditemukan');
     }
 
-    // 🔥 AMBIL MENU
     const menu = await this.prisma.menu.findUnique({
       where: { id: order.menuId },
     });
 
-    // 🔥 BALIKKAN STOCK
     if (menu) {
       await this.prisma.menu.update({
         where: { id: order.menuId },
@@ -133,12 +115,10 @@ export class OrdersService {
       });
     }
 
-    // 🔥 HAPUS PAYMENT DULU
     await this.prisma.payment.deleteMany({
       where: { orderId: id },
     });
 
-    // 🔥 HAPUS ORDER
     await this.prisma.order.delete({
       where: { id },
     });

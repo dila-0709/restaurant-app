@@ -4,7 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 
-import { PrismaModule } from 'src/prisma/prisma.module';
+import { PrismaModule } from '../prisma/prisma.module';
 
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { RolesGuard } from './guards/roles.guard';
@@ -13,7 +13,6 @@ import { RolesGuard } from './guards/roles.guard';
   imports: [
     PrismaModule,
 
-    // JWT CONFIG (lebih aman pakai ENV)
     JwtModule.registerAsync({
       useFactory: () => ({
         secret: process.env.JWT_SECRET || 'SECRET_KEY',

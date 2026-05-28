@@ -10,11 +10,11 @@ import { MenuModule } from './menu/menu.module';
 import { OrdersModule } from './orders/orders.module';
 import { PaymentsModule } from './payments/payments.module';
 import { UsersModule } from './users/users.module';
+
 import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
-    // ENV CONFIG (WAJIB kalau mau production ready)
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath:
@@ -23,13 +23,13 @@ import { PrismaModule } from './prisma/prisma.module';
           : '.env',
     }),
 
-    // MODULES KAMU
     AuthModule,
     UsersModule,
     CategoriesModule,
     MenuModule,
     OrdersModule,
     PaymentsModule,
+
     PrismaModule,
   ],
   controllers: [AppController],
