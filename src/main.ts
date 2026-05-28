@@ -4,30 +4,36 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
-  try {
-    const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule);
 
-    app.useGlobalPipes(new ValidationPipe());
+  // 🔥 penting biar Railway aman
+  app.enableCors({
+    origin: '*',
+  });
 
-    const config = new DocumentBuilder()
-      .setTitle('Library API')
-      .setDescription('Backend API Sistem Perpustakaan')
-      .setVersion('1.0')
-      .addBearerAuth()
-      .build();
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+    }),
+  );
 
-    const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api', app, document);
+  const config = new DocumentBuilder()
+    .setTitle('Restaurant API')
+    .setDescription('Backend API Sistem Restaurant')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
 
-    const port = process.env.PORT || 3000;
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
-    await app.listen(port, '0.0.0.0');
+  const port = process.env.PORT || 3000;
 
-    console.log(`🚀 Server running on port ${port}`);
-  } catch (error) {
-    console.error('❌ SERVER FAILED TO START');
-    console.error(error);
-  }
+  // 🔥 WAJIB pakai 0.0.0.0 di Railway
+  await app.listen(port, '0.0.0.0');
+
+  console.log(`🚀 Server running on port ${port}`);
 }
 
 bootstrap();
