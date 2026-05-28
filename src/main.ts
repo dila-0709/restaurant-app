@@ -6,7 +6,6 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // 🔥 penting biar Railway aman
   app.enableCors({
     origin: '*',
   });
@@ -28,12 +27,12 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  const port = process.env.PORT || 3000;
+  // 🔥 WAJIB RAILWAY FIX
+  const port = process.env.PORT;
 
-  // 🔥 WAJIB pakai 0.0.0.0 di Railway
   await app.listen(port, '0.0.0.0');
 
-  console.log(`🚀 Server running on port ${port}`);
+  console.log('🚀 Server running on port:', port);
 }
 
 bootstrap();
