@@ -6,10 +6,12 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // 🔥 CORS (biar bisa diakses dari frontend)
   app.enableCors({
     origin: '*',
   });
 
+  // 🔥 VALIDATION GLOBAL
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -17,6 +19,7 @@ async function bootstrap() {
     }),
   );
 
+  // 🔥 SWAGGER
   const config = new DocumentBuilder()
     .setTitle('Restaurant API')
     .setDescription('Backend API Sistem Restaurant')
@@ -27,8 +30,13 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  // 🔥 WAJIB RAILWAY FIX
+  // 🔥 RAILWAY PORT (WAJIB INI)
   const port = process.env.PORT;
+
+  // kalau PORT tidak ada, langsung stop biar ketahuan error
+  if (!port) {
+    throw new Error('PORT environment variable not found');
+  }
 
   await app.listen(port, '0.0.0.0');
 
