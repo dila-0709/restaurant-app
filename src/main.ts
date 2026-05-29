@@ -12,9 +12,15 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
+
   SwaggerModule.setup('api', app, document);
 
+  console.log('=================================');
+  console.log('SWAGGER AKTIF DI: /api');
+  console.log('=================================');
+
   const port = process.env.PORT || 3000;
+
   await app.listen(port, '0.0.0.0');
 
   console.log(`APP RUNNING ON PORT: ${port}`);
