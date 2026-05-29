@@ -5,35 +5,33 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // 🔥 PENTING: biar semua endpoint jadi /api/...
+  // 🔥 Global prefix (WAJIB untuk production API)
   app.setGlobalPrefix('api');
 
-  // 🔥 Swagger config + JWT support
+  // 🔥 Swagger config + JWT Bearer Auth
   const config = new DocumentBuilder()
     .setTitle('Restaurant API')
     .setDescription('API Documentation')
     .setVersion('1.0')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-      },
-      'access-token',
-    )
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    })
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
 
-  // 🔥 Swagger URL di production
+  // 🔥 Swagger endpoint (production safe)
   SwaggerModule.setup('api/docs', app, document, {
     swaggerOptions: {
-      persistAuthorization: true, // biar token ga hilang refresh
+      persistAuthorization: true, // biar token tidak hilang
     },
   });
 
   console.log('=================================');
   console.log('SWAGGER AKTIF DI: /api/docs');
+  console.log('API PREFIX: /api');
   console.log('=================================');
 
   const port = process.env.PORT || 3000;
