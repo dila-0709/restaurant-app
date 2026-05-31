@@ -5,6 +5,15 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // 🔥 ENABLE CORS
+  app.enableCors({
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:5173',
+    ],
+    credentials: true,
+  });
+
   // 🔥 Global prefix (WAJIB untuk production API)
   app.setGlobalPrefix('api');
 
@@ -25,7 +34,7 @@ async function bootstrap() {
   // 🔥 Swagger endpoint (production safe)
   SwaggerModule.setup('api/docs', app, document, {
     swaggerOptions: {
-      persistAuthorization: true, // biar token tidak hilang
+      persistAuthorization: true,
     },
   });
 
